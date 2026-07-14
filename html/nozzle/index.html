@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rocket Nozzle — Daniel Kennedy</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link href="../style.css" rel="stylesheet">
+  <style>
+    body {
+      overflow: auto;
+    }
+    .back-btn {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 100;
+      font-family: system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+    .back-btn:hover {
+      color: black;
+    }
+    @media (max-width: 768px) {
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+      }
+    }
+    #nozzle-canvas-container {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    #nozzle-canvas-container canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #fetch-error {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff6666;
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      text-align: center;
+      padding: 2rem;
+      max-width: 420px;
+    }
+    .content {
+      padding: 4rem 2rem 6rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .content h1 {
+      font-family: system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: white;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .content p {
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 1rem;
+    }
+    #char-canvas-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+    #char-canvas {
+      display: block;
+      position: static;
+      width: 100%;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <a href="../" class="card back-btn">Go back</a>
+
+  <div id="nozzle-canvas-container">
+    <p id="fetch-error"></p>
+  </div>
+
+  <div class="content">
+    <h1>Rocket Nozzle</h1>
+    <p>
+        Imagine you drop a rock into a river. The rock disturbes the water, sending little waves outward from the point it was dropped. The waves are elliptical, because the water is flowing, so the parts of the waves travelling upstream are slowed down, and the parts travelling downstream are sped up by the flow.
+    <p>
+        Now, imagine a supersonic river, where the flow is faster than the speed of the waves in stagnant water. If you drop a rock into a supersonic river, the waves cannot go upstream, because the flow is moving faster than their travel speed against them, the wave would be like a pizza slice pointing upstream with the tip at the point where the rock landed, rather than an ellipse.
+    </p>
+    <p>
+        Information can only propagate downstream in supersonic flow. It propagates along characteristic lines, which are the cut lines on our pizza slice on the supersonic river.
+    </p>
+    <p>
+        We can use this idea (Method of Characteristics) to design the optimum nozzle for a rocket engine.
+    </p>
+  </div>
+
+  <div id="char-canvas-container">
+    <canvas id="char-canvas" height="400"></canvas>
+  </div>
+
+    <div class="content">
+    <p>
+        One "interesting" way to achieve this is to mess around with 20+ year old code written for a NASA-funded project.
+
+        You can see how far I got with this <a href="https://github.com/danielkennedy1/Three-Dimensional-Nozzle-Design-Code/">here</a>.
+    </p>
+
+    <p>
+        All visual assets on this page are artefacts from calculating a nozzle geometry using this software.
+    </p>
+        </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    const SEGMENTS = 24;
+
+    async function init() {
+        const scale = 0.5;
+      const container = document.getElementById('nozzle-canvas-container');
+
+      const scene = new THREE.Scene();
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      // Load and parse CSV
+      let points;
+      try {
+        const response = await fetch('./contour.csv');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        points = text
+          .split('\n')
+          .filter(line => line.trim() !== '')
+          .map(line => {
+            const parts = line.split(',');
+            return new THREE.Vector2(parseFloat(parts[1]) * scale, parseFloat(parts[0]) * scale);
+          });
+      } catch (err) {
+        console.error('Failed to load contour.csv:', err);
+        const errEl = document.getElementById('fetch-error');
+        errEl.style.display = 'block';
+        errEl.textContent =
+          'Could not load contour.csv. ' +
+          'This page must be served over HTTP — fetch of local files is blocked under file://.';
+        return;
+      }
+
+      // Build quad-grid cage: rings + profile lines
+      const contour = points;
+      const numPoints = contour.length;
+      const TWO_PI = Math.PI * 2;
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+      // 1. Compute full grid of 3D vertices[i][j]
+      const vertices = [];
+      for (let i = 0; i < numPoints; i++) {
+        const row = [];
+        for (let j = 0; j < SEGMENTS; j++) {
+          const t = j * (TWO_PI / SEGMENTS);
+          row.push(new THREE.Vector3(
+            contour[i].x * Math.cos(t),
+            contour[i].y,
+            contour[i].x * Math.sin(t)
+          ));
+        }
+        vertices.push(row);
+      }
+
+      const group = new THREE.Group();
+
+      // 2. Ring lines (LineLoop) — one horizontal ring per contour point
+      for (let i = 0; i < numPoints; i++) {
+        if (Math.abs(contour[i].x) < 1e-6) continue;
+        const pos = [];
+        for (let j = 0; j < SEGMENTS; j++) {
+          const v = vertices[i][j];
+          pos.push(v.x, v.y, v.z);
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        group.add(new THREE.LineLoop(geo, lineMat));
+      }
+
+      // 3. Profile lines (Line) — one axial profile per angular step
+      for (let j = 0; j < SEGMENTS; j++) {
+        const pos = [];
+        for (let i = 0; i < numPoints; i++) {
+          const v = vertices[i][j];
+          pos.push(v.x, v.y, v.z);
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        group.add(new THREE.Line(geo, lineMat));
+      }
+
+      // Centre group vertically
+      const yVals = contour.map(p => p.y);
+      group.position.y = -((Math.min(...yVals) + Math.max(...yVals)) / 2);
+      scene.add(group);
+
+      // Spherical orbit state
+      let theta = 45;          // azimuth (Y-axis rotation)
+      let phi = 1.0;          // polar angle from top (~69°)
+      let radius = 70;
+
+      function updateCamera() {
+        camera.position.set(
+          radius * Math.sin(phi) * Math.sin(theta),
+          radius * Math.cos(phi),
+          radius * Math.sin(phi) * Math.cos(theta)
+        );
+        camera.lookAt(0, 0, 0);
+      }
+      updateCamera();
+
+      // Mouse / touch drag orbit
+      let isDragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      renderer.domElement.addEventListener('pointerdown', e => {
+        isDragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        renderer.domElement.setPointerCapture(e.pointerId);
+      });
+
+      renderer.domElement.addEventListener('pointermove', e => {
+        if (!isDragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        theta -= dx * 0.005;
+        phi = Math.max(0.05, Math.min(Math.PI - 0.05, phi + dy * 0.005));
+        lastX = e.clientX;
+        lastY = e.clientY;
+        updateCamera();
+      });
+
+      renderer.domElement.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+
+      // Scroll to zoom
+      renderer.domElement.addEventListener('wheel', e => {
+        radius = Math.max(25, Math.min(250, radius + e.deltaY * 0.1));
+        updateCamera();
+      }, { passive: true });
+
+      // Resize
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      // Render loop — auto-rotate when not dragging
+      const AUTO_SPEED = 0.001;
+      function animate() {
+        requestAnimationFrame(animate);
+        if (!isDragging) {
+          phi += AUTO_SPEED;
+          theta += AUTO_SPEED;
+          updateCamera();
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    init();
+  </script>
+
+  <script>
+    (async function drawCharacteristics() {
+      const canvas = document.getElementById('char-canvas');
+      const container = document.getElementById('char-canvas-container');
+      const ctx = canvas.getContext('2d');
+
+      // Set pixel dimensions to match display size
+      function resize() {
+        const w = container.clientWidth - 32; // subtract padding
+        canvas.width = w * window.devicePixelRatio;
+        canvas.height = 400 * window.devicePixelRatio;
+        canvas.style.height = '400px';
+        draw();
+      }
+
+      let lines = [];
+
+      function draw() {
+        const W = canvas.width;
+        const H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        if (lines.length === 0) return;
+
+        // Data bounds: x in [0, ~0.785], y in [0, 1]
+        const xMin = 0, xMax = 0.7856;
+        const yMin = 0, yMax = 1.0;
+        const pad = 20 * window.devicePixelRatio;
+
+        function toCanvas(x, y) {
+          const cx = pad + (x - xMin) / (xMax - xMin) * (W - 2 * pad);
+          // y=1 at top, y=0 at center (axis), mirror for full cross-section
+          const cy = H / 2 - (y - yMin) / (yMax - yMin) * (H / 2 - pad);
+          return [cx, cy];
+        }
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 1;
+
+        for (const line of lines) {
+          if (line.length < 2) continue;
+
+          // Top half
+          ctx.beginPath();
+          const [sx, sy] = toCanvas(line[0][0], line[0][1]);
+          ctx.moveTo(sx, sy);
+          for (let i = 1; i < line.length; i++) {
+            const [cx, cy] = toCanvas(line[i][0], line[i][1]);
+            ctx.lineTo(cx, cy);
+          }
+          ctx.stroke();
+
+          // Mirrored bottom half
+          ctx.beginPath();
+          const [sx2, sy2] = toCanvas(line[0][0], line[0][1]);
+          ctx.moveTo(sx2, H - sy2);
+          for (let i = 1; i < line.length; i++) {
+            const [cx, cy] = toCanvas(line[i][0], line[i][1]);
+            ctx.lineTo(cx, H - cy);
+          }
+          ctx.stroke();
+        }
+      }
+
+      try {
+        const resp = await fetch('./characteristics.csv');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = await resp.text();
+        const rows = text.split('\n').slice(1); // skip header
+        let current = [];
+        for (const row of rows) {
+          const parts = row.trim().split(',');
+          if (parts.length < 2) continue;
+          const x = parseFloat(parts[0]);
+          const y = parseFloat(parts[1]);
+          if (isNaN(x) || isNaN(y)) continue;
+          current.push([x, y]);
+          if (Math.abs(y) < 1e-6) {
+            lines.push(current);
+            current = [];
+          }
+        }
+        if (current.length > 0) lines.push(current);
+      } catch (err) {
+        console.error('Failed to load characteristics.csv:', err);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+    })();
+  </script>
+</body>
+</html>

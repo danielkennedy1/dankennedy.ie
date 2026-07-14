@@ -4,6 +4,11 @@
   padding: 0;
 }
 
+::selection {
+  background: #01156b;
+  color: white;
+}
+
 body {
   background: black;
   overflow: hidden;
@@ -38,7 +43,7 @@ canvas {
   font-size: clamp(3rem, 8vw, 7rem);
   color: white;
   visibility: hidden;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
   font-family: system-ui, sans-serif;
 }
@@ -111,6 +116,36 @@ canvas {
   font-size: 0.9rem;
   line-height: 1.6;
   transition: color 0.2s;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card ul li a {
+  display: block;
+  padding: 0.5rem;
+  margin: 0 -0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  background: black;
+  color: white;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.card:hover ul li a {
+  background: white;
+  color: black;
+}
+
+.card ul li:hover a,
+.card:hover ul li:hover a {
+  background: black;
+  color: white;
+  text-decoration: underline;
 }
 
 .card:hover {
