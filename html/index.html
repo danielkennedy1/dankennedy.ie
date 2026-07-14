@@ -1,64 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>Daniel Kennedy</title>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=1.0, initial-scale=1.0">
-  <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daniel Kennedy</title>
   <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
   <link rel="manifest" href="./site.webmanifest">
-
   <link href="style.css" rel="stylesheet">
   <script src="main.js" defer></script>
-  <script>
-    //scroll to top on refresh
-    window.onload = function () {
-      window.scrollTo(0, 0);
-    }
-  </script>
 </head>
-
-<body class="bg-slate-900 px-10 container">
-  <h1 id="name" class="text-center text-3xl lg:text-7xl font-mono my-9 break-">~<!-- Name gets typed out here --></h1>
-  <div id="sections" class="flex flex-wrap justify-around">
-    <section id="contact-section">
-      <div id="contact">
-        <a href="https://www.linkedin.com/in/danielkennedy-/">
-          <i style="font-size: 50px;" class="devicon-linkedin-plain"></i>
-        </a>
-        <a href="https://github.com/danielkennedy1/">
-          <i style="font-size: 50px;" class="devicon-github-plain"></i>
-        </a>
-        <a href="mailto:danielrkennedy03@gmail.com"> <img src="./images/mail.svg" alt="Email"></a>
-      </div>
-    </section>
-    <section>
-      <h1>About me</h1>
-      <div class="flex flex-wrap justify-evenly items-center">
-        <ul class="text-left">
-          <li>Studying: [<a class="underline" href="http://software-engineering.ie">ISE</a>] MSc Immersive Software
-            Engineering @ UL</li>
-          <li>Based in: Limerick</li>
-          <li>
-            <div id="techs" class="flex flex-row flex-wrap justify-evenly pl-4 my-4">
-              <i style="font-size: 50px;" class="devicon-cplusplus-plain invisible"></i>
-              <i style="font-size: 50px;" class="devicon-python-plain invisible"></i>
-              <i style="font-size: 50px;" class="devicon-arduino-plain invisible"></i>
-              <i style="font-size: 50px;" class="devicon-java-plain invisible"></i>
-              <i style="font-size: 50px;" class="devicon-kotlin-plain invisible"></i>
-              <i style="font-size: 50px;" class="devicon-ros-original-wordmark invisible"></i>
-            </div>
-          </li>
-        </ul>
-        <img src="./images/headshot.jpg" alt="Me" class="rounded-full w-1/4 m-5">
-      </div>
-    </section>
-  </div>
+<body>
+  <canvas id="canvas"></canvas>
 </body>
-
 </html>
