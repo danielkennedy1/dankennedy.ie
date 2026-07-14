@@ -41,3 +41,38 @@ function draw() {
 }
 
 draw();
+
+function easeInOut(t) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+function animateNameWipe() {
+  const bar = document.getElementById('wipe-bar');
+  const text = document.getElementById('name-text');
+  const coverDuration = 300;
+  const revealDuration = 120;
+
+  const start = performance.now();
+
+  function phase1(now) {
+    const t = Math.min((now - start) / coverDuration, 1);
+    bar.style.width = (easeInOut(t) * 100) + '%';
+    if (t < 1) {
+      requestAnimationFrame(phase1);
+    } else {
+      text.style.visibility = 'visible';
+      bar.style.right = 'auto';
+      bar.style.left = '0';
+      const start2 = performance.now();
+      requestAnimationFrame(function phase2(now2) {
+        const t2 = Math.min((now2 - start2) / revealDuration, 1);
+        bar.style.width = ((1 - easeInOut(t2)) * 100) + '%';
+        if (t2 < 1) requestAnimationFrame(phase2);
+      });
+    }
+  }
+
+  requestAnimationFrame(phase1);
+}
+
+setTimeout(animateNameWipe, 500);

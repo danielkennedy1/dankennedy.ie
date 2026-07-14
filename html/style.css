@@ -12,3 +12,39 @@ body {
 canvas {
   display: block;
 }
+
+#name-wrapper {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  white-space: nowrap;
+  line-height: 1;
+  z-index: 10;
+}
+
+#name-text {
+  display: block;
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: white;
+  visibility: hidden;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-family: system-ui, sans-serif;
+}
+
+#wipe-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 0;
+  background: white;
+}
+
+@media (max-width: 640px) {
+  #name-wrapper {
+    right: 1rem;
+    left: 1rem;
+    text-align: center;
+  }
+}
