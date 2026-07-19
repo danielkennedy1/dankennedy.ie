@@ -1,3 +1,17 @@
+## 0.3.0 (2026-07-19)
+
+### Feat
+
+- **wireframe**: change the whole thing
+- **nozzle**: nozzle stuff
+- add scroll snap layout and interactive project cards section
+- add name wipe-reveal animation
+- replace portfolio with interactive dot matrix canvas
+
+### Refactor
+
+- **html**: move things for server into html
+
 ## 0.2.1 (2025-09-21)
 
 ### Fix
