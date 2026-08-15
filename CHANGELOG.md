@@ -1,3 +1,9 @@
+## 0.4.0 (2026-08-15)
+
+### Feat
+
+- **rewrite**: change some stuff, more on examsearch
+
 ## 0.3.0 (2026-07-19)
 
 ### Feat
