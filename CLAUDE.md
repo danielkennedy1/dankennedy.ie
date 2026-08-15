@@ -8,12 +8,16 @@ Personal portfolio website (dankennedy.ie) — a static single-page site served 
 
 ## Architecture
 
-- `html/` — all static assets served by nginx
-  - `index.html` — single-page layout; sections start `visibility: hidden` and are revealed via JS animations
-  - `main.js` — orchestrates all entrance animations (typewriter effect on name, then sequential fade-ins for sections, contact buttons, and tech icons)
-  - `style.css` — **pre-compiled** Tailwind CSS v3.2.7 (checked into the repo; not generated at runtime). Edit this file directly when adding new Tailwind utility classes.
-  - `tailwind.config.js` — config reference; uses `tailwindcss-animated` plugin for animation utilities
-- `Dockerfile` — copies `html/` into `nginx:alpine` image, exposes port 80
+- `index.html` — main page; sections start `visibility: hidden` and are revealed via JS animations
+- `main.js` — orchestrates all entrance animations (canvas dot effect, name wipe reveal)
+- `nozzle/` — rocket nozzle subpage (`index.html` + `nozzle.js` with Three.js 3D scene)
+- `examsearch/` — examsearch project description subpage
+- `public/` — static assets served as-is (images, favicons, webmanifest, CSVs, pre-compiled CSS)
+  - `public/style.css` — **pre-compiled** Tailwind CSS v3.2.7. Edit directly when adding new utility classes.
+  - `html/tailwind.config.js` — config reference for Tailwind regeneration
+- `package.json` — Vite (dev), three, urdf-loader
+- `vite.config.js` — multi-page Rollup input config
+- `Dockerfile` — multi-stage: node build → nginx serve from `dist/`
 - `.github/workflows/build.yaml` — CI/CD pipeline triggered on push to `main`
 
 ## CI/CD Pipeline
@@ -29,7 +33,14 @@ This repo uses **Conventional Commits** enforced by Commitizen (`cz_conventional
 
 ## Local Development
 
-To preview the site locally with Docker:
+```bash
+npm install
+npm run dev      # Vite dev server at http://localhost:5173
+npm run build    # outputs to dist/
+npm run preview  # preview dist/ locally
+```
+
+To preview via Docker (mirrors production):
 
 ```bash
 docker build -t dankennedy-ie .
@@ -37,10 +48,8 @@ docker run -p 8080:80 dankennedy-ie
 # Open http://localhost:8080
 ```
 
-To update Tailwind CSS (if adding new utility classes not already in `style.css`), regenerate it with:
+To update Tailwind CSS (if adding new utility classes not already in `public/style.css`), regenerate it with:
 
 ```bash
-npx tailwindcss -i input.css -o html/style.css --config html/tailwind.config.js
+npx tailwindcss -i input.css -o public/style.css --config html/tailwind.config.js
 ```
-
-There is no package.json in this repo — Tailwind can be run via `npx` without a local install.

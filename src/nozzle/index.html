@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rocket Nozzle — Daniel Kennedy</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="/style.css" rel="stylesheet">
+  <style>
+    body {
+      overflow: auto;
+    }
+    .back-btn {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 100;
+      font-family: system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      color: white;
+      padding: 1rem 1.5rem;
+    }
+    .back-btn:hover {
+      color: black;
+    }
+    @media (max-width: 768px) {
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+      }
+    }
+    #nozzle-canvas-container {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    #nozzle-canvas-container canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #fetch-error {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff6666;
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      text-align: center;
+      padding: 2rem;
+      max-width: 420px;
+    }
+    .content {
+      padding: 4rem 2rem 6rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .content h1 {
+      font-family: system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: white;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .content p {
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 1rem;
+    }
+    #char-canvas-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+    #char-canvas {
+      display: block;
+      position: static;
+      width: 100%;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="card back-btn">Go back</a>
+
+  <div id="nozzle-canvas-container">
+    <p id="fetch-error"></p>
+  </div>
+
+  <div class="content">
+    <h1>Rocket Nozzle</h1>
+    <p>
+        Imagine you drop a rock into a river. The rock disturbes the water, sending little waves outward from the point it was dropped. The waves are elliptical, because the water is flowing, so the parts of the waves travelling upstream are slowed down, and the parts travelling downstream are sped up by the flow.
+    <p>
+        Now, imagine a supersonic river, where the flow is faster than the speed of the waves in stagnant water. If you drop a rock into a supersonic river, the waves cannot go upstream, because the flow is moving faster than their travel speed against them, the wave would be like a pizza slice pointing upstream with the tip at the point where the rock landed, rather than an ellipse.
+    </p>
+    <p>
+        Information can only propagate downstream in supersonic flow. It propagates along characteristic lines, which are the cut lines on our pizza slice on the supersonic river.
+    </p>
+    <p>
+        We can use this idea (Method of Characteristics) to design the optimum nozzle for a rocket engine.
+    </p>
+  </div>
+
+  <div id="char-canvas-container">
+    <canvas id="char-canvas" height="400"></canvas>
+  </div>
+
+    <div class="content">
+    <p>
+        One "interesting" way to achieve this is to mess around with 20+ year old code written for a NASA-funded project.
+
+        You can see how far I got with this <a href="https://github.com/danielkennedy1/Three-Dimensional-Nozzle-Design-Code/">here</a>.
+    </p>
+
+    <p>
+        All visual assets on this page are artefacts from calculating a nozzle geometry using this software.
+    </p>
+    </div>
+
+  <script type="module" src="./nozzle.js"></script>
+</body>
+</html>
