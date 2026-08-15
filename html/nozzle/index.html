@@ -127,7 +127,7 @@
     <p>
         All visual assets on this page are artefacts from calculating a nozzle geometry using this software.
     </p>
-        </div>
+    </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
@@ -240,39 +240,6 @@
       }
       updateCamera();
 
-      // Mouse / touch drag orbit
-      let isDragging = false;
-      let lastX = 0;
-      let lastY = 0;
-
-      renderer.domElement.addEventListener('pointerdown', e => {
-        isDragging = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-        renderer.domElement.setPointerCapture(e.pointerId);
-      });
-
-      renderer.domElement.addEventListener('pointermove', e => {
-        if (!isDragging) return;
-        const dx = e.clientX - lastX;
-        const dy = e.clientY - lastY;
-        theta -= dx * 0.005;
-        phi = Math.max(0.05, Math.min(Math.PI - 0.05, phi + dy * 0.005));
-        lastX = e.clientX;
-        lastY = e.clientY;
-        updateCamera();
-      });
-
-      renderer.domElement.addEventListener('pointerup', () => {
-        isDragging = false;
-      });
-
-      // Scroll to zoom
-      renderer.domElement.addEventListener('wheel', e => {
-        radius = Math.max(25, Math.min(250, radius + e.deltaY * 0.1));
-        updateCamera();
-      }, { passive: true });
-
       // Resize
       window.addEventListener('resize', () => {
         const w = container.clientWidth;
@@ -282,15 +249,13 @@
         renderer.setSize(w, h);
       });
 
-      // Render loop — auto-rotate when not dragging
+      // Render loop
       const AUTO_SPEED = 0.001;
       function animate() {
         requestAnimationFrame(animate);
-        if (!isDragging) {
-          phi += AUTO_SPEED;
-          theta += AUTO_SPEED;
-          updateCamera();
-        }
+        phi += AUTO_SPEED;
+        theta += AUTO_SPEED;
+        updateCamera();
         renderer.render(scene, camera);
       }
       animate();
