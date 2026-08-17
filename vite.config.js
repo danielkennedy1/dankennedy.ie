@@ -9,7 +9,7 @@ export default defineConfig({
     {
       name: 'dir-index',
       configureServer(server) {
-        const pages = ['/nozzle', '/examsearch']
+        const pages = ['/nozzle', '/examsearch', '/hand']
         server.middlewares.use((req, res, next) => {
           const pathname = (req.url ?? '/').split('?')[0]
           if (pages.includes(pathname)) {
@@ -30,6 +30,7 @@ export default defineConfig({
         main: resolve(__dirname, 'src/index.html'),
         nozzle: resolve(__dirname, 'src/nozzle/index.html'),
         examsearch: resolve(__dirname, 'src/examsearch/index.html'),
+        hand: resolve(__dirname, 'src/hand/index.html'),
       },
     },
   },
