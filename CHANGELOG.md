@@ -1,3 +1,11 @@
+## 0.5.0 (2026-08-18)
+
+### Feat
+
+- **hand**: different shader looks a bit better
+- **hand**: would like less edges on the wireframe
+- migrate to Vite build toolchain
+
 ## 0.4.0 (2026-08-15)
 
 ### Feat
