@@ -35,7 +35,7 @@
     }
     #hand-canvas-container {
       width: 100%;
-      height: 100vh;
+      height: 80vh;
       position: relative;
       overflow: hidden;
     }
@@ -78,6 +78,15 @@
       color: rgba(255, 255, 255, 0.6);
       margin-bottom: 1rem;
     }
+
+    .content li {
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 1rem;
+      margin-left: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -88,10 +97,40 @@
   </div>
 
   <div class="content">
-    <h1>Robotic Hand</h1>
+    <h1>Robotic Hands</h1>
+
     <p>
-      The DG-5F is a 5-fingered dexterous robotic hand made by Tesollo.
+        Robotic hands still can't match human dexterity,
+        partly because training them directly on real hardware is slow,
+        expensive, and rough on the equipment.
+        Instead of training on real hardware, I trained a control policy in simulation.
+        A major challenge with this is that simulated physics never quite matches reality, so behaviour that works perfectly in simulation often breaks down on real hardware.
     </p>
+
+    <p>So, I measured the physical properties of a single joint on a robotic hand:</p>
+    <ul>
+        <li>
+            Friction
+        </li>
+        <li>
+            Gearbox behaviour
+        </li>
+        <li>
+            etc.
+        </li>
+    </ul>
+    <p> and used those measurements to calibrate a physics simulation.</p>
+
+    <p>
+        I then trained a reinforcement learning policy in that simulation to move the joint to target positions using torque control.
+        Once trained, I deployed the policy straight onto the physical joint with no real-world data and no fine-tuning
+    </p> 
+
+    <p>It worked: the policy controlled the real joint successfully despite never having seen it during training.</p>
+
+    <p>I followed this up with an ablation study to work out which parts of the calibration actually mattered for the transfer to succeed.</p>
+
+    <p>Source code, results, etc. are unfortunately not publicly available.</p>
   </div>
 
   <script type="module" src="./hand.js"></script>
