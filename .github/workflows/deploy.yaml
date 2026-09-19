@@ -1,0 +1,20 @@
+name: Prod Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: github
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /home/deployment/app
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u danielkennedy1 --password-stdin
+            docker compose -f docker-compose-prod.yaml pull portfolio
+            docker compose -f docker-compose-prod.yaml up -d --no-deps portfolio
