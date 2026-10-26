@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- Dev-only, not part of the build: scripts/make-art.sh screenshots this to make hand.png -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { margin: 0; background: black; }
+    #hand { width: 1440px; height: 1080px; }
+  </style>
+</head>
+<body>
+  <div id="hand"></div>
+  <script type="module">
+    import { mountHand } from './hand.js'
+    mountHand(document.getElementById('hand'), { spin: false })
+  </script>
+</body>
+</html>
