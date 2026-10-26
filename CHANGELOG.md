@@ -1,3 +1,9 @@
+## 0.7.0 (2026-10-26)
+
+### Feat
+
+- single-page pixel screens homepage
+
 ## 0.6.1 (2026-09-19)
 
 ### Fix
