@@ -2,9 +2,10 @@ import * as THREE from 'three'
 
 const SEGMENTS = 24;
 
-async function init() {
-    const scale = 0.5;
-  const container = document.getElementById('nozzle-canvas-container');
+// Mounts the spinning nozzle wireframe (revolved from contour.csv) into `container`.
+// Rendering pauses whenever isActive() is false.
+export async function mountNozzle(container, { isActive = () => true } = {}) {
+  const scale = 0.5;
 
   const scene = new THREE.Scene();
 
@@ -21,7 +22,7 @@ async function init() {
   // Load and parse CSV
   let points;
   try {
-    const response = await fetch('./contour.csv');
+    const response = await fetch('/nozzle/contour.csv');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const text = await response.text();
     points = text
@@ -33,11 +34,7 @@ async function init() {
       });
   } catch (err) {
     console.error('Failed to load contour.csv:', err);
-    const errEl = document.getElementById('fetch-error');
-    errEl.style.display = 'block';
-    errEl.textContent =
-      'Could not load contour.csv. ' +
-      'This page must be served over HTTP — fetch of local files is blocked under file://.';
+    container.appendChild(document.createElement('p')).textContent = 'Could not load the nozzle contour.';
     return;
   }
 
@@ -109,19 +106,23 @@ async function init() {
   }
   updateCamera();
 
-  // Resize
-  window.addEventListener('resize', () => {
+  new ResizeObserver(() => {
     const w = container.clientWidth;
     const h = container.clientHeight;
+    if (!w || !h) return;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
-  });
+  }).observe(container);
+
+  // One frame up front, even while hidden: compiles the shaders now rather than on first show
+  renderer.render(scene, camera);
 
   // Render loop
   const AUTO_SPEED = 0.001;
   function animate() {
     requestAnimationFrame(animate);
+    if (!isActive()) return;
     phi += AUTO_SPEED;
     theta += AUTO_SPEED;
     updateCamera();
@@ -129,94 +130,3 @@ async function init() {
   }
   animate();
 }
-
-init();
-
-(async function drawCharacteristics() {
-  const canvas = document.getElementById('char-canvas');
-  const container = document.getElementById('char-canvas-container');
-  const ctx = canvas.getContext('2d');
-
-  // Set pixel dimensions to match display size
-  function resize() {
-    const w = container.clientWidth - 32; // subtract padding
-    canvas.width = w * window.devicePixelRatio;
-    canvas.height = 400 * window.devicePixelRatio;
-    canvas.style.height = '400px';
-    draw();
-  }
-
-  let lines = [];
-
-  function draw() {
-    const W = canvas.width;
-    const H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-    if (lines.length === 0) return;
-
-    // Data bounds: x in [0, ~0.785], y in [0, 1]
-    const xMin = 0, xMax = 0.7856;
-    const yMin = 0, yMax = 1.0;
-    const pad = 20 * window.devicePixelRatio;
-
-    function toCanvas(x, y) {
-      const cx = pad + (x - xMin) / (xMax - xMin) * (W - 2 * pad);
-      // y=1 at top, y=0 at center (axis), mirror for full cross-section
-      const cy = H / 2 - (y - yMin) / (yMax - yMin) * (H / 2 - pad);
-      return [cx, cy];
-    }
-
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.lineWidth = 1;
-
-    for (const line of lines) {
-      if (line.length < 2) continue;
-
-      // Top half
-      ctx.beginPath();
-      const [sx, sy] = toCanvas(line[0][0], line[0][1]);
-      ctx.moveTo(sx, sy);
-      for (let i = 1; i < line.length; i++) {
-        const [cx, cy] = toCanvas(line[i][0], line[i][1]);
-        ctx.lineTo(cx, cy);
-      }
-      ctx.stroke();
-
-      // Mirrored bottom half
-      ctx.beginPath();
-      const [sx2, sy2] = toCanvas(line[0][0], line[0][1]);
-      ctx.moveTo(sx2, H - sy2);
-      for (let i = 1; i < line.length; i++) {
-        const [cx, cy] = toCanvas(line[i][0], line[i][1]);
-        ctx.lineTo(cx, H - cy);
-      }
-      ctx.stroke();
-    }
-  }
-
-  try {
-    const resp = await fetch('./characteristics.csv');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const text = await resp.text();
-    const rows = text.split('\n').slice(1); // skip header
-    let current = [];
-    for (const row of rows) {
-      const parts = row.trim().split(',');
-      if (parts.length < 2) continue;
-      const x = parseFloat(parts[0]);
-      const y = parseFloat(parts[1]);
-      if (isNaN(x) || isNaN(y)) continue;
-      current.push([x, y]);
-      if (Math.abs(y) < 1e-6) {
-        lines.push(current);
-        current = [];
-      }
-    }
-    if (current.length > 0) lines.push(current);
-  } catch (err) {
-    console.error('Failed to load characteristics.csv:', err);
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-})();

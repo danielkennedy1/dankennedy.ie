@@ -1,6 +1,6 @@
 # dankennedy.ie
 
-Personal portfolio site — static HTML/CSS/JS served via nginx in Docker.
+Personal site — a single static page (Vite) served via nginx in Docker.
 
 ## Local preview
 
@@ -11,12 +11,19 @@ docker run -p 8080:80 dankennedy-ie
 
 Open http://localhost:8080
 
-## Tailwind CSS
-
-`html/style.css` is pre-compiled and committed. To regenerate after editing classes in `index.html` or `main.js`:
+## Development
 
 ```bash
-npx tailwindcss -i input.css -o html/style.css --config html/tailwind.config.js
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # outputs to dist/
 ```
 
-Add `--watch` to rebuild on file changes during development.
+## Screen images
+
+The homepage backgrounds in `public/images/screens/` are generated from private
+source photos in `assets/` (gitignored, never published):
+
+```bash
+nix-shell -p imagemagick --run scripts/make-art.sh
+```

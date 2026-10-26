@@ -5,47 +5,321 @@
 }
 
 ::selection {
-  background: #01156b;
-  color: white;
+  background: var(--accent);
+  color: var(--ink);
 }
 
 body {
-  background: black;
+  background: var(--ink);
   overflow: hidden;
 }
 
-canvas {
-  display: block;
+:root {
+  --ink: #141414;
+  --paper: #e9e7e2;
+  --muted: rgba(233, 231, 226, 0.6);
+  --accent: #3d7bff;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fade: 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#stage {
   position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--ink);
+}
+
+#stage .layer {
+  position: absolute;
+  inset: 0;
+  background: center / cover no-repeat; /* size set per screen by fit() in main.js */
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity var(--fade);
+}
+
+#stage .layer.on {
+  opacity: 1;
+}
+
+/* Full-res version of a screen, faded in over its pixel layer while reading */
+#stage .detail {
+  background-color: var(--ink);
+  color: var(--accent);
+}
+
+#stage .detail-image {
+  image-rendering: auto;
+}
+
+#stage .detail canvas {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: auto;
 }
 
-#hero {
+#stage .detail-hand {
+  position: absolute;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #stage .layer,
+  .panel,
+  .page { transition: none; }
+}
+
+.screen {
+  font-family: var(--sans);
+}
+
+.panel {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  width: min(34rem, calc(100% - 2rem));
+  padding: 1.25rem 1.5rem 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+body.reading .panel {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.panel p {
+  color: var(--muted);
+}
+
+.panel p + p {
+  margin-top: 0.3rem;
+}
+
+.screen h1,
+.screen h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+}
+
+.screen h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1.5rem;
+}
+
+.screen a {
+  color: var(--paper);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+.screen a:hover {
+  color: var(--accent);
+}
+
+.panel .links {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.panel-nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  justify-items: center;
+  align-items: center;
+  margin: 0.75rem -0.75rem 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(233, 231, 226, 0.12);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+.panel-nav button {
+  display: grid;
+  place-items: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--paper);
+  font: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.panel-nav .prev svg {
+  transform: scaleX(-1);
+}
+
+.panel-nav button:hover:not(:disabled),
+.panel-nav button:focus-visible {
+  background: var(--accent);
+  color: var(--ink);
+  outline: none;
+}
+
+.panel-nav .read {
+  padding: 0 1.4rem;
+  background: var(--accent);
+  color: var(--ink);
+}
+
+.panel-nav .read:hover,
+.panel-nav .read:focus-visible {
+  background: var(--paper);
+}
+
+.panel-nav button:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+/* Reading view: the full-res picture up top, the write-up scrolls up over it */
+.page {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--paper);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s 0.3s, visibility 0.8s 0.3s;
+}
+
+body.reading .page {
+  opacity: 1;
+  visibility: visible;
+}
+
+.page-body {
+  margin-top: 62vh;
+  margin-top: 62dvh;
+  padding: 7rem max(1.5rem, calc((100% - 40rem) / 2)) 4rem;
+  background: linear-gradient(to bottom, rgba(20, 20, 20, 0), rgba(20, 20, 20, 0.94) 7rem);
+}
+
+.page p,
+.page ul {
+  margin-bottom: 1rem;
+}
+
+.page ul {
+  padding-left: 1.25rem;
+}
+
+.page .scene {
   position: relative;
+  height: min(26rem, 55vh);
+  margin: 2rem 0;
+}
+
+.page .scene canvas {
+  display: block;
+}
+
+.page .meta {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.page .exit {
+  display: block;
+  padding: 0.6rem 1.4rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--accent);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.page .exit:hover,
+.page .exit:focus-visible {
+  background: var(--paper);
+  outline: none;
+}
+
+.page .exit-top {
+  position: absolute;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+}
+
+.page .exit-bottom {
+  margin: 3rem auto 0;
+}
+
+#slots {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: var(--ink);
+}
+
+#slots button {
+  width: 14px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--muted);
+  background: none;
+  cursor: pointer;
+}
+
+#slots button:hover {
+  border-color: var(--paper);
+}
+
+#slots button[aria-current] {
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 #name-wrapper {
-  position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-  background: black;
-  white-space: nowrap;
-  line-height: 1;
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
   z-index: 10;
+  padding: 0.3rem 0.6rem;
+  background: var(--ink);
+  color: var(--paper);
+  white-space: nowrap;
+  line-height: 1.15;
 }
 
 #name-text {
   display: block;
-  font-size: clamp(3rem, 8vw, 7rem);
-  color: white;
-  visibility: hidden;
+  font-family: var(--sans);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 500;
   letter-spacing: -0.02em;
-  font-family: system-ui, sans-serif;
+  visibility: hidden;
 }
 
 #wipe-bar {
@@ -54,114 +328,28 @@ canvas {
   right: 0;
   height: 100%;
   width: 0;
-  background: white;
+  background: var(--accent);
 }
 
 @media (max-width: 640px) {
-  #name-wrapper {
+  /* clear of the name and slots on narrow screens */
+  .page .exit-top {
+    top: 4.25rem;
+  }
+
+  #slots {
+    top: 1rem;
     right: 1rem;
+  }
+
+  #name-wrapper {
+    top: 1rem;
     left: 1rem;
-    text-align: center;
   }
-}
 
-#scroll-container {
-  position: relative;
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-}
-
-.section {
-  height: 100vh;
-  scroll-snap-align: start;
-}
-
-.cards-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.cards-grid {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  width: 100%;
-  max-width: 1200px;
-}
-
-.card {
-  flex: 1;
-  border: 1px solid white;
-  padding: 2rem;
-  background: black;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
-}
-
-.card h2 {
-  font-family: system-ui, sans-serif;
-  font-weight: 700;
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  color: white;
-  margin-bottom: 1rem;
-  transition: color 0.2s;
-}
-
-.card p {
-  color: rgba(255, 255, 255, 0.6);
-  font-family: system-ui, sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  transition: color 0.2s;
-}
-
-.card ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.card ul li a {
-  display: block;
-  padding: 0.5rem;
-  margin: 0 -0.5rem;
-  font-family: system-ui, sans-serif;
-  font-size: 0.9rem;
-  background: black;
-  color: white;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
-}
-
-.card:hover ul li a {
-  background: white;
-  color: black;
-}
-
-.card ul li:hover a,
-.card:hover ul li:hover a {
-  background: black;
-  color: white;
-  text-decoration: underline;
-}
-
-.card:hover {
-  background: white;
-}
-
-.card:hover h2 {
-  color: black;
-}
-
-.card:hover p {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-@media (max-width: 768px) {
-  .cards-grid {
-    flex-direction: column;
+  .panel {
+    bottom: 1rem;
+    padding: 1rem 1.1rem 0.4rem;
   }
+
 }

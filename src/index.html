@@ -12,65 +12,92 @@
   <script type="module" src="/main.js"></script>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
-  <div id="scroll-container">
-    <section class="section" id="hero">
-      <div id="name-wrapper">
-        <span id="name-text">Daniel Kennedy</span>
-        <div id="wipe-bar"></div>
-      </div>
-    </section>
-    <section class="section cards-section">
-      <div class="cards-grid">
-        <div class="card">
-          <h2>About</h2>
-          <p>Learned to code before ChatGPT</p>
-          <p>Cohort 1 of <a href="https://software-engineering.ie/">[ISE]</a></p>
-          <p>"Well able" to milk cows</p>
-        </div>
-        <a href="#projects" class="card">
-          <h2>Projects</h2>
-          <p>Click or scroll</p>
-        </a>
-        <div class="card">
-          <h2>Elsewhere</h2>
-          <ul>
-            <li><a href="https://www.linkedin.com/in/danielkennedy-/">Linkedin</a></li>
-            <li><a href="https://github.com/danielkennedy1/">Github</a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-    <section id="projects" class="section cards-section">
-      <div class="cards-grid">
-        <a href="nozzle/" class="card">
-          <h2>Rocket Nozzle</h2>
-          <p>
-              Dug up some old NASA code to help make the 
-              RoI's first additively manufactured liquid rocket engine.
-          </p>
-        </a>
-        <a href="examsearch/" class="card">
-          <h2>Examsearch</h2>
-          <p>
-            Where it all started.
-          </p>
-        </a>
-        <a href="hand/" class="card">
-          <h2>Robotic Hands</h2>
-          <p>
-            MSc Thesis on RL for Dexterous Manipulation
-          </p>
-        </a>
+  <div id="stage" aria-hidden="true"></div>
 
-        <a href="https://github.com/danielkennedy1?tab=repositories" class="card">
-          <h2>Others</h2>
-          <p>
-            Have a look on Github.
-          </p>
-        </a>
+  <div id="name-wrapper">
+    <span id="name-text">Daniel Kennedy</span>
+    <div id="wipe-bar"></div>
+  </div>
+
+  <!--
+    One section per screen. data-img is a screen image from scripts/make-art.sh
+    (all the same size, so they crossfade pixel for pixel).
+    An optional <article class="page"> holds the longer write-up. Reading it fades the
+    background to data-detail: the same picture at full res ("hand" = live 3D model,
+    "characteristics" = crisp nozzle chart, otherwise an image URL). data-fit="width" (vs the
+    default cover) keeps the whole width on portrait screens, for renders on a plain
+    background; data-zoom scales that up. A <div class="scene"
+    data-scene="..."> in a write-up mounts that live 3D view inline (see SCENES in main.js).
+  -->
+  <nav id="slots" aria-label="Screens"></nav>
+
+  <main id="screens">
+    <section class="screen" data-id="about" data-img="/images/screens/farm.png">
+      <div class="panel">
+        <h2>About</h2>
+        <p>Learned to code before ChatGPT.</p>
+        <p>Cohort 1 of <a href="https://software-engineering.ie/">ISE</a>.</p>
+        <p>"Well able" to milk cows.</p>
+        <p class="links">
+          <a href="https://www.linkedin.com/in/danielkennedy-/">LinkedIn</a>
+          <a href="https://github.com/danielkennedy1/">GitHub</a>
+        </p>
       </div>
     </section>
-  </div>
+
+    <section class="screen" data-id="hands" data-img="/images/screens/hand.png" data-fit="width" data-zoom="1.5" data-detail="hand" hidden>
+      <div class="panel">
+        <h2>Robotic Hands</h2>
+        <p>MSc thesis on RL for dexterous manipulation. Trained in a calibrated simulation, ran on a real robotic joint with no fine-tuning.</p>
+      </div>
+      <article class="page">
+        <h1>Robotic Hands</h1>
+        <p>Robotic hands still can't match human dexterity, partly because training them directly on real hardware is slow, expensive, and rough on the equipment. Instead of training on real hardware, I trained a control policy in simulation. A major challenge with this is that simulated physics never quite matches reality, so behaviour that works perfectly in simulation often breaks down on real hardware.</p>
+        <p>So, I measured the physical properties of a single joint on a robotic hand:</p>
+        <ul>
+          <li>Friction</li>
+          <li>Gearbox behaviour</li>
+          <li>etc.</li>
+        </ul>
+        <p>and used those measurements to calibrate a physics simulation.</p>
+        <p>I then trained a reinforcement learning policy in that simulation to move the joint to target positions using torque control. Once trained, I deployed the policy straight onto the physical joint with no real-world data and no fine-tuning.</p>
+        <p>It worked: the policy controlled the real joint successfully despite never having seen it during training.</p>
+        <p>I followed this up with an ablation study to work out which parts of the calibration actually mattered for the transfer to succeed.</p>
+        <p>Source code, results, etc. are unfortunately not publicly available.</p>
+      </article>
+    </section>
+
+    <section class="screen" data-id="nozzle" data-img="/images/screens/characteristics.png" data-fit="width" data-detail="characteristics" hidden>
+      <div class="panel">
+        <h2>Rocket Nozzle</h2>
+        <p>Dug up some old NASA code to help make the Republic of Ireland's first additively manufactured liquid rocket engine.</p>
+      </div>
+      <article class="page">
+        <h1>Rocket Nozzle</h1>
+        <p>Imagine you drop a rock into a river. The rock disturbs the water, sending little waves outward from the point it was dropped. The waves are elliptical, because the water is flowing, so the parts of the waves travelling upstream are slowed down, and the parts travelling downstream are sped up by the flow.</p>
+        <p>Now, imagine a supersonic river, where the flow is faster than the speed of the waves in stagnant water. If you drop a rock into a supersonic river, the waves cannot go upstream, because the flow is moving faster than their travel speed against them, the wave would be like a pizza slice pointing upstream with the tip at the point where the rock landed, rather than an ellipse.</p>
+        <p>Information can only propagate downstream in supersonic flow. It propagates along characteristic lines, which are the cut lines on our pizza slice on the supersonic river.</p>
+        <p>We can use this idea (Method of Characteristics) to design the optimum nozzle for a rocket engine.</p>
+        <div class="scene" data-scene="nozzle" aria-label="3D wireframe of the nozzle"></div>
+        <p>One "interesting" way to achieve this is to mess around with 20+ year old code written for a NASA-funded project. You can see how far I got with this <a href="https://github.com/danielkennedy1/Three-Dimensional-Nozzle-Design-Code/">here</a>.</p>
+      </article>
+    </section>
+
+    <section class="screen" data-id="examsearch" data-img="/images/screens/cows.png" data-detail="/images/screens/cows-full.jpg" hidden>
+      <div class="panel">
+        <h2>Examsearch</h2>
+        <p>Where it all started.</p>
+      </div>
+      <article class="page">
+        <h1>Examsearch</h1>
+        <p class="meta">Feb 2021, no formal CS instruction, no ChatGPT</p>
+        <p>During 5th year of Secondary School while sent home over lockdown, I started practicing Leaving Certificate exam questions. I found myself at odds with the Irish government's examination material archive, on examinations.ie. See, when you want to check your answers using the corresponding marking scheme for your paper, you have to go through an entire menu again. I thought this was no good.</p>
+        <p>Naturally, I decided to use Selenium to scrape the links from this and build a database of all the material offered on the archive, ~15k documents.</p>
+        <p>Once I had managed this, I used PHP (vanilla, no MVC framework or anything lmao) to make a website to serve them up in a more user-friendly way.</p>
+        <p>This website, after some iteration and improvements, saw ~250k visits the year after I made it, just from word of mouth.</p>
+        <p>Still up at <a href="https://examsearch.ie">examsearch.ie</a>.</p>
+      </article>
+    </section>
+  </main>
 </body>
 </html>

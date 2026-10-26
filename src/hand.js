@@ -1,8 +1,13 @@
 import * as THREE from 'three'
 import URDFLoader from 'urdf-loader'
 
-async function init() {
-  const container = document.getElementById('hand-canvas-container')
+// Mounts the spinning wireframe hand into `container`. Rendering pauses whenever
+// isActive() is false; spin: false holds the starting pose (what make-art renders).
+export async function mountHand(container, {
+  isActive = () => true,
+  pixelRatio = 1,
+  spin = true,
+} = {}) {
 
   const scene = new THREE.Scene()
 
@@ -13,7 +18,7 @@ async function init() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.setClearColor(0x000000, 0)
   renderer.setSize(width, height)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatio))
   container.appendChild(renderer.domElement)
 
   // Use a dedicated LoadingManager so we can await all mesh loads, not just URDF parse
@@ -28,9 +33,7 @@ async function init() {
     robot = await loader.loadAsync('/hand/dg5f/dg5f_left.urdf')
   } catch (err) {
     console.error('Failed to load URDF:', err)
-    const errEl = document.getElementById('fetch-error')
-    errEl.style.display = 'block'
-    errEl.textContent = 'Could not load hand model. This page must be served over HTTP.'
+    container.appendChild(document.createElement('p')).textContent = 'Could not load the hand model.'
     return
   }
 
@@ -135,23 +138,30 @@ async function init() {
   }
   updateCamera()
 
-  window.addEventListener('resize', () => {
+  new ResizeObserver(() => {
     const w = container.clientWidth
     const h = container.clientHeight
+    if (!w || !h) return
     camera.aspect = w / h
     camera.updateProjectionMatrix()
     renderer.setSize(w, h)
-  })
+  }).observe(container)
 
-  const AUTO_SPEED = 0.001
-  function animate() {
-    requestAnimationFrame(animate)
-    t += AUTO_SPEED
+  const AUTO_SPEED = spin ? 0.001 : 0
+  function draw() {
     updateCamera()
     edgeMat.uniforms.uCameraPos.value.copy(camera.position)
     renderer.render(scene, camera)
   }
+  // One frame up front, even while hidden: compiles the shaders and uploads the
+  // geometry now rather than on first show
+  draw()
+
+  function animate() {
+    requestAnimationFrame(animate)
+    if (!isActive()) return
+    t += AUTO_SPEED
+    draw()
+  }
   animate()
 }
-
-init()

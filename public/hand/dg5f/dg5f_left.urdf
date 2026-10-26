@@ -16,16 +16,6 @@
       <inertia ixx="1.0999E-05" ixy="-2.1734E-12" ixz="-1.2441E-12" iyy="1.1018E-05" iyz="-4.0435E-09" izz="2.0531E-05" />
       <mass value="0.05" />
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_mount.dae"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_mount_c.STL"/>
-      </geometry>
-    </collision>
   </link>
 
   <link name="ll_dg_base">
@@ -34,18 +24,6 @@
       <inertia ixx="0.00048608" ixy="-1.041E-05" ixz="1.7229E-05" iyy="0.00049085" iyz="5.191E-06" izz="0.00043369" />
       <mass value="0.3529" />
     </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_base.dae" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_base_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_base" type="fixed">
     <parent link="ll_dg_mount"/>
@@ -65,12 +43,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_palm.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_palm_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_palm" type="fixed">
     <parent link="ll_dg_base"/>
@@ -90,12 +62,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_1_1.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_1_1_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_1_1" type="revolute">
     <origin xyz="-0.0162 -0.019 0.0128" rpy="0.0 0.0 0.0" />
@@ -117,12 +83,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_1_2.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_1_2_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_1_2" type="revolute">
     <origin xyz="0.04195 0.0 0.0" rpy="0.0 0.0 1.5708" />
@@ -144,12 +104,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_1_3.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_1_3_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_1_3" type="revolute">
     <origin xyz="0.0 -0.031 0.0" rpy="-1.0 0.0 0.0" />
@@ -171,12 +125,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_1_4.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_1_4_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_1_4" type="revolute">
     <origin xyz="0.0 -0.0388 0.0" rpy="-0.1 0.0 0.0" />
@@ -198,12 +146,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_1_tip.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_1_tip_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_1_tip" type="fixed">
     <origin xyz="0.0 -0.0363 0.0" rpy="0.0 0.0 0.0" />
@@ -223,12 +165,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_2_1.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_2_1_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_2_1" type="revolute">
     <origin xyz="-0.0071 -0.027 0.0661" rpy="0.0 0.0 0.0" />
@@ -250,12 +186,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_2_2.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_2_2_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_2_2" type="revolute">
     <origin xyz="0.01765 0.0 0.0265" rpy="0.0 0.6 0.0" />
@@ -277,12 +207,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_2_3.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_2_3_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_2_3" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 1 0.0" />
@@ -304,12 +228,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_2_4.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_2_4_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_2_4" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 0.8 0.0" />
@@ -331,12 +249,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_2_tip.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_2_tip_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_2_tip" type="fixed">
     <origin xyz="0.0 0.0 0.0255" rpy="0.0 0.0 0.0" />
@@ -356,12 +268,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_3_1.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_3_1_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_3_1" type="revolute">
     <origin xyz="-0.0071 -0.0025 0.0701" rpy="0.0 0.0 0.0" />
@@ -383,12 +289,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_3_2.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_3_2_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_3_2" type="revolute">
     <origin xyz="0.01765 0.0 0.0265" rpy="0.0 1.5708 0.0" />
@@ -410,12 +310,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_3_3.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_3_3_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_3_3" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 0.8 0.0" />
@@ -437,12 +331,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_3_4.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_3_4_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_3_4" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 1.2 0.0" />
@@ -464,12 +352,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_3_tip.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_3_tip_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_3_tip" type="fixed">
     <origin xyz="0.0 0.0 0.0255" rpy="0.0 0.0 0.0" />
@@ -489,12 +371,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_4_1.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_4_1_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_4_1" type="revolute">
     <origin xyz="-0.0071 0.022 0.0621" rpy="0.0 0.0 0.0" />
@@ -516,12 +392,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_4_2.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_4_2_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_4_2" type="revolute">
     <origin xyz="0.01765 0.0 0.0265" rpy="0.0 1.5708 0.0" />
@@ -543,12 +413,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_4_3.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_4_3_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_4_3" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 1.0 0.0" />
@@ -570,12 +434,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_4_4.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_4_4_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_4_4" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 0.8 0.0" />
@@ -597,12 +455,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_4_tip.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_4_tip_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_4_tip" type="fixed">
     <origin xyz="0.0 0.0 0.0255" rpy="0.0 0.0 0.0" />
@@ -622,12 +474,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_5_1.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_5_1_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_5_1" type="revolute">
     <origin xyz="0.0103 0.0195 0.0182" rpy="0.0 0.0 0.0" />
@@ -649,12 +495,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_5_2.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_5_2_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_5_2" type="revolute">
     <origin xyz="0.0 0.028 0.0381" rpy="0.0 1.5708 0.0" />
@@ -676,12 +516,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_5_3.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_5_3_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_5_3" type="revolute">
     <origin xyz="0.0 0.0 0.031" rpy="0.0 1.4 0.0" />
@@ -703,12 +537,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_5_4.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_5_4_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_5_4" type="revolute">
     <origin xyz="0.0 0.0 0.0388" rpy="0.0 1.0 0.0" />
@@ -730,12 +558,6 @@
         <mesh filename="package://meshes/dg5f_left/ll_dg_5_tip.dae" />
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://meshes/dg5f_left/ll_dg_5_tip_c.STL" />
-      </geometry>
-    </collision>
   </link>
   <joint name="lj_dg_5_tip" type="fixed">
     <origin xyz="0.0 0.0 0.0363" rpy="0.0 0.0 0.0" />
